@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white">
-    <div class="page-title p-4">告知书信息</div>
+    <div class="page-title">告知书信息</div>
     <div class="p-4">
       <TableForm
         :fields="[
@@ -10,7 +10,7 @@
         :onReqApi="requestApi"></TableForm>
     </div>
   </div>
-  <div class="mt-4 p-4 bg-white">
+  <div class="page-body">
     <div class="flex justify-between mb-4">
       <span class="mr-auto font-bold">模板列表</span>
       <user-detail><el-button type="primary">新建</el-button></user-detail>

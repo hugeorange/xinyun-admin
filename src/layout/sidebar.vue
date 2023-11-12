@@ -8,22 +8,23 @@
         <span class="text-primary ml-1">机台管理系统</span>
       </div>
     </router-link>
-    <el-menu active-text-color="#409EFF" background-color="#fff" :default-active="currRoute.path" unique-opened>
+    <el-menu
+      active-text-color="#409EFF"
+      background-color="#fff"
+      :default-active="currRoute.path"
+      unique-opened>
       <menu-item v-for="v in menus" :item="v" />
     </el-menu>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Platform } from "@element-plus/icons-vue";
+import { Platform } from '@element-plus/icons-vue'
 import MenuItem from './menuItem.vue'
 import { menus } from '../router/index'
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
 
 const currRoute = useRoute()
-
-
-
 </script>
 
 <style scoped lang="scss">
@@ -35,7 +36,7 @@ const currRoute = useRoute()
   top: 0;
   bottom: 0;
   background-color: #fff;
-
+  z-index: 99;
   .logo {
     padding: 8px;
     margin-top: 4px;
@@ -43,16 +44,10 @@ const currRoute = useRoute()
     justify-content: center;
     align-items: center;
     font-size: 20px;
-
   }
 
   .el-menu {
     border-right: none;
   }
-
-
 }
-</style> 
-
-
-
+</style>
