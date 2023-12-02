@@ -18,25 +18,25 @@
 </template>
 
 <script setup lang="ts">
-import { UserFilled, ArrowDown } from "@element-plus/icons-vue";
-import { ElMessageBox, ElMessage } from "element-plus";
-import router from "../router/index";
+import { UserFilled, ArrowDown } from '@element-plus/icons-vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import router from '../router/index'
 
-import { logoutApi } from "../apis/user";
-import { removeToken } from "@/utils";
+import { logoutApi } from '../apis/user'
+import { removeToken } from '@/utils'
 const handleLogOut = () => {
-  ElMessageBox.confirm("确定注销并退出系统吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   }).then(() => {
-    ElMessage.success("注销成功");
+    ElMessage.success('注销成功')
     // logoutApi().then(() => {
-    removeToken();
-    router.push("/login");
+    removeToken()
+    router.push('/login')
     // })
-  });
-};
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -48,5 +48,6 @@ const handleLogOut = () => {
   color: #fff;
   display: flex;
   align-items: center;
+  z-index: 999;
 }
 </style>
