@@ -6,8 +6,7 @@
         ref="loginFormRef"
         :model="loginData"
         :rules="loginRules"
-        class="login-form"
-      >
+        class="login-form">
         <el-form-item prop="username">
           <div class="p-2">
             <el-icon>
@@ -20,15 +19,13 @@
             class="flex-1"
             size="large"
             placeholder=""
-            name="username"
-          />
+            name="username" />
         </el-form-item>
 
         <el-tooltip
           :disabled="isCapslock === false"
           content="Caps lock is On"
-          placement="right"
-        >
+          placement="right">
           <el-form-item prop="password">
             <span class="p-2">
               <el-icon>
@@ -41,12 +38,10 @@
               :type="passwordVisible === false ? 'password' : 'input'"
               size="large"
               name="password"
-              @keyup.enter="handleLogin"
-            />
+              @keyup.enter="handleLogin" />
             <span
               class="mr-2 cursor-pointer"
-              @click="passwordVisible = !passwordVisible"
-            >
+              @click="passwordVisible = !passwordVisible">
               <el-icon>
                 <View v-if="passwordVisible" />
                 <Hide v-if="!passwordVisible" />
@@ -54,27 +49,6 @@
             </span>
           </el-form-item>
         </el-tooltip>
-
-        <!-- 验证码 -->
-        <!-- <el-form-item prop="verifyCode">
-          <span class="p-2">
-            <el-icon>
-              <CircleCheck />
-            </el-icon>
-          </span>
-
-          <el-input
-            v-model="loginData.verifyCode"
-            auto-complete="off"
-            class="w-[60%]"
-            @keyup.enter="handleLogin"
-          />
-
-          <div class="captcha">
-            <img :src="captchaBase64" @click="getCaptcha" />
-          </div>
-        </el-form-item> -->
-
         <el-button
           :loading="loading"
           type="primary"
@@ -89,114 +63,84 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import { ElForm, ElMessage } from "element-plus";
-import { User, Lock, View, Hide, CircleCheck } from "@element-plus/icons-vue";
-import { getCaptchaApi, loginApi } from "../../apis/user.js";
-import router from "../../router";
-import { rejects } from "assert";
+import { computed, onMounted, ref } from 'vue'
+import { ElForm, ElMessage } from 'element-plus'
+import { User, Lock, View, Hide, CircleCheck } from '@element-plus/icons-vue'
+import { loginApi } from '../../apis/user.js'
+import router from '../../router'
 
 // /**
 //  * 按钮loading
 //  */
-const loading = ref(false);
+const loading = ref(false)
 // /**
 //  * 是否大写锁定
 //  */
-const isCapslock = ref(false);
+const isCapslock = ref(false)
 // /**
 //  * 密码是否可见
 //  */
-const passwordVisible = ref(false);
-// /**
-//  * 验证码图片Base64字符串
-//  */
-const captchaBase64 = ref();
+const passwordVisible = ref(false)
 
 // /**
 //  * 登录表单引用
 //  */
-const loginFormRef = ref(ElForm);
+const loginFormRef = ref(ElForm)
 
 const loginData = ref({
-  username: "admin",
-  password: "123456",
-  verifyCode: "",
-  verifyCodeKey: "",
-});
+  username: '',
+  password: '',
+})
 
 const loginRules = computed(() => {
   return {
     username: [
       {
         required: true,
-        trigger: "blur",
+        trigger: 'blur',
         message: `请输入用户名`,
       },
     ],
     password: [
       {
         required: true,
-        trigger: "blur",
+        trigger: 'blur',
         message: `请输入密码`,
       },
     ],
     verifyCode: [
       {
         required: true,
-        trigger: "blur",
+        trigger: 'blur',
         message: `请输入验证码`,
       },
     ],
-  };
-});
-
-/**
- * 获取验证码
- */
-function getCaptcha() {
-  getCaptchaApi().then(({ data }) => {
-    console.log(data);
-    const { captchaImgBase64, verifyCodeKey } = data;
-    loginData.value.verifyCodeKey = verifyCodeKey;
-    captchaBase64.value = captchaImgBase64;
-  });
-}
+  }
+})
 
 /**
  * 登录
  */
 function handleLogin() {
-  loginFormRef.value.validate((valid) => {
+  loginFormRef.value.validate(valid => {
     if (valid) {
-      loading.value = true;
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 1500);
-      }).then(() => {
-        ElMessage.success("登录成功");
-        loading.value = false;
-        localStorage.setItem("accessToken", "res.data.accessToken");
-        router.push("/");
-      });
-      // loginApi(loginData.value).then((res) => {
-      //   console.log(res);
-      //   ElMessage.success('登录成功');
-      //   localStorage.setItem("accessToken", res.data.accessToken);
-      //   router.push('/');
-      // }).catch(err => {
-      //   ElMessage.error(err.msg ?? '登录失败')
-      // }).finally(() => {
-      //   loading.value = false;
-      // });
+      loading.value = true
+      loginApi(loginData.value)
+        .then(res => {
+          ElMessage.success('登录成功')
+          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('user', JSON.stringify(res.data.user))
+          router.push('/')
+        })
+        .catch(err => {
+          ElMessage.error(err.msg ?? '登录失败')
+        })
+        .finally(() => {
+          loading.value = false
+        })
     }
-  });
+  })
 }
-
-onMounted(() => {
-  getCaptcha();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -207,7 +151,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   overflow-y: auto;
-  background: url("@/assets/images/login-bg.jpg") no-repeat center right;
+  background: url('@/assets/images/login-bg.jpg') no-repeat center right;
 
   .login-form {
     padding: 30px 10px;

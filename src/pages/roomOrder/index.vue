@@ -18,6 +18,7 @@
     </div>
     <el-table
       ref="multipleTableRef"
+      v-loading="loading"
       :stripe="true"
       :border="true"
       :data="tableData"
@@ -35,10 +36,7 @@
       <el-table-column label="操作">
         <template #default="scope">
           <user-detail :row="scope.row">
-            <el-button
-              type="primary"
-              link
-              @click="handleDetail(scope.$index, scope.row)">
+            <el-button type="primary" link @click="handleDetail(scope.$index, scope.row)">
               工单详情
             </el-button>
           </user-detail>
@@ -71,14 +69,20 @@
 import TableForm from '@/components/tableForm/index.vue'
 import UserDetail from './components/detail.vue'
 import BatchOpt from '@/components/batchOpt/index.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ElTable } from 'element-plus'
-import { tableData } from './helper/index'
+import { getWorkOrdersApi } from '@/apis/work'
 
+const loading = ref(false)
 const currentNo = ref(1)
-
+const total = ref(0)
+const tableData = ref([])
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref([])
+
+onMounted(() => {
+  getWorkOrderList({})
+})
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)
@@ -97,8 +101,36 @@ const handleCancel = (index, row) => {
 
 // 请求表格api
 const requestApi = (form: any): Promise<boolean> => {
+  console.log(form)
   return new Promise((resolve, reject) => {
-    setTimeout(() => resolve(true), 3000)
+    getWorkOrderList(
+      {
+        star_time: form.date[0],
+        end_time: form.date[1],
+      },
+      resolve,
+    )
   })
+}
+
+const getWorkOrderList = (data, resolve?: (value: boolean | PromiseLike<boolean>) => void) => {
+  loading.value = true
+  getWorkOrdersApi({
+    page_index: 1,
+    page_size: 10,
+    ...data,
+  })
+    .then(res => {
+      console.log(res)
+      tableData.value = res.data
+      resolve && resolve(true)
+    })
+    .catch(err => {
+      console.log(err.msg)
+      resolve && resolve(false)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 </script>

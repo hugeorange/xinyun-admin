@@ -19,6 +19,7 @@
     </div>
     <el-table
       ref="multipleTableRef"
+      v-loading="loading"
       :stripe="true"
       :border="true"
       :data="tableData"
@@ -43,10 +44,7 @@
       <el-table-column label="操作">
         <template #default="scope">
           <book-detail :row="scope.row">
-            <el-button
-              type="primary"
-              link
-              @click="handleDetail(scope.$index, scope.row)">
+            <el-button type="primary" link @click="handleDetail(scope.$index, scope.row)">
               预订详情
             </el-button>
           </book-detail>
@@ -76,14 +74,20 @@
 import TableForm from '@/components/tableForm/index.vue'
 import BookDetail from './components/detail.vue'
 import CreateBook from './components/createBook.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ElTable } from 'element-plus'
-import { tableData } from './helper/index'
+import { getBookListApi } from '@/apis/book'
 
+const loading = ref(false)
 const currentNo = ref(1)
-
+const total = ref(0)
+const tableData = ref([])
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref([])
+
+onMounted(() => {
+  getBookList({})
+})
 
 // 批量操作
 const handleBatchOpt = () => {
@@ -111,8 +115,36 @@ const handleCancel = (index, row) => {
 
 // 请求表格api
 const requestApi = (form: any): Promise<boolean> => {
+  console.log(form)
   return new Promise((resolve, reject) => {
-    setTimeout(() => resolve(true), 3000)
+    getBookList(
+      {
+        star_time: form.date[0],
+        end_time: form.date[1],
+      },
+      resolve,
+    )
   })
+}
+
+const getBookList = (data, resolve?: (value: boolean | PromiseLike<boolean>) => void) => {
+  loading.value = true
+  getBookListApi({
+    page_index: 1,
+    page_size: 10,
+    ...data,
+  })
+    .then(res => {
+      console.log(res)
+      tableData.value = res.data
+      resolve && resolve(true)
+    })
+    .catch(err => {
+      console.log(err.msg)
+      resolve && resolve(false)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 </script>

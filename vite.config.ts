@@ -15,4 +15,13 @@ export default defineConfig({
     },
   },
   base: '/xinyun-admin/',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://139.224.59.93:8080',
+        changeOrigin: true,
+        // rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })

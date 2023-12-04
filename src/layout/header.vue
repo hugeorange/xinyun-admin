@@ -30,11 +30,15 @@ const handleLogOut = () => {
     cancelButtonText: '取消',
     type: 'warning',
   }).then(() => {
-    ElMessage.success('注销成功')
-    // logoutApi().then(() => {
-    removeToken()
-    router.push('/login')
-    // })
+    logoutApi()
+      .then(() => {
+        ElMessage.success('注销成功')
+        removeToken()
+        window.location.replace('/')
+      })
+      .catch(() => {
+        ElMessage.error('注销失败')
+      })
   })
 }
 </script>

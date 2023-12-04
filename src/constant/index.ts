@@ -1,1 +1,1 @@
-export const API_URL = "https://vue3.youlai.tech/prod-api/";
+export const API_URL = 'http://139.224.59.93:8080'
